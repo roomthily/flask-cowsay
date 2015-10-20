@@ -17,7 +17,7 @@ and grab [ngrok](https://dl.ngrok.com/ngrok_2.0.19_darwin_amd64.zip). Unzip and 
 ngrok http 5050
 ```
 
-Grab the `https` from the spin-up output to use as the Slack URL and be sure to run the flask app with the same port. It is less than ideal really - anytime you need to spin up ngrok, the slack url changes. ¯\_(ツ)_/¯
+Grab the `https` from the spin-up output to use as the Slack URL and be sure to run the flask app with the same port. It is less than ideal really - anytime you need to spin up ngrok, the slack url changes. ¯\\_(ツ)_/¯
 
 Set up the slack slash command, update the token in the app code, run flask and ngrok. 
 

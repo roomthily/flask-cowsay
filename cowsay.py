@@ -1,31 +1,43 @@
 from flask import Flask
-from flask_slack import Slack
+from flask import request, abort
 app = Flask(__name__)
 
-slack = Slack(app)
-
 import subprocess
+import urlparse
+
+_template = """
+     | %s |
+
+          ^__^
+          (oo)\\_______
+          (__)\\       )\\/\\
+              ||----w |
+              ||     ||
+"""
 
 
-@slack.command('/cowsay', token="", team_id="", methods=['POST'])
-def say_it(**kwargs):
-    text = kwargs.get('text')
+@app.route('/', methods=['POST'])
+def say_it():
+    text = urlparse.unquote(request.form['text'])
+    token = request.form['token']
+    if token != 'YOUR TOKEN':
+        abort('Invalid team token', 403)
+
+    parts = text.split(':')
+    if parts[0] == 'base':
+        # only return the cow
+        return _template % parts[1]
 
     s = subprocess.Popen(
         'cowsay "{0}"'.format(text),
-        shell=True,
+        shell=False,
         stdout=subprocess.PIPE,
         stdin=subprocess.PIPE,
         stderr=subprocess.PIPE
     )
     stdout, stderr = s.communicate()
-    return slack.response(stdout)
-
-
-app.add_url_rule('/', view_func=slack.dispatch)
+    return stdout
 
 
 if __name__ == "__main__":
-    app.debug = True
-    # app.run(host='0.0.0.0')
-    app.run()
+    app.run(host='0.0.0.0')
